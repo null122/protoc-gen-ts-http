@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+package mindmorphosis.flow.api.user;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option java_package = "com.mindmorphosis.flow.service.user.proto";
+option java_outer_classname = "User";
+
+service UserService {
+
+  // 获取用户简要信息
+  rpc GetUserInfo(GetUserRequest) returns (UserInfo) {
+    option(google.api.http) = {
+      get: "/web/v1/user/{id}"
+    };
+  }
+
+  // 获取用户详细信息(注: 需要身份验证)
+  rpc GetUserDetailInfo(GetUserDetailInfoRequest) returns (UserDetailInfo) {
+    option(google.api.http) = {
+      get: "/web/v1/user/detail/{id}"
+    };
+  }
+
+  // 获取组织架构中的用户列表
+  rpc GetDepartmentUserTable(GetDepartmentUserTableRequest) returns (GetDepartmentUserTableReply) {
+    option(google.api.http) = {
+      post: "/web/v1/user/table/{department_id}"
+      body: "*"
+    };
+  }
+
+  // 修改密码
+  rpc ChangePassword(ChangePasswordRequest) returns (google.protobuf.Empty) {
+    option(google.api.http) = {
+      put: "/web/v1/user/password"
+      body: "*"
+    };
+  }
+
+  // 创建用户
+  rpc CreateUser(CreateUserRequest) returns (google.protobuf.Empty) {
+    option(google.api.http) = {
+      post: "/web/v1/user"
+      body: "*"
+    };
+  }
+}
+
+// 用户状态
+enum UserStatus {
+  EMPLOYED = 0; // 在职
+  RESIGNED = 1; // 离职
+}
+
+message UserInfo {
+  int32 id = 1;           // user-id
+  string name = 2;
+  string employee_no = 3; // 员工号
+  int32 department_id = 4;
+  string department_name = 5;
+  string job_title = 6;   // 职务
+  string status = 7;
+}
+
+message UserDetailInfo {
+  int32 id = 1;           // user-id
+  string name = 2;
+  string email = 3;
+  string phone = 4;
+  string employee_no = 5; // 员工号
+  int32 department_id = 6;
+  string department_name = 7;
+  string job_title = 8;   // 职务
+  string status = 9;
+}
+
+message CreateUserRequest {
+  string name = 1;
+  string email = 2;
+  string phone = 3;
+  string employee_no = 4; // 员工号
+  int32 department_id = 5;
+  string status = 6;
+  string password = 7;
+}
+
+message ChangePasswordRequest {
+  int32 id = 1;
+  string old_password = 2;
+  string new_password = 3;
+}
+
+message GetUserDetailInfoRequest {
+  int32 id = 1;
+}
+
+message GetUserRequest {
+  int32 id = 1;
+}
+
+message GetDepartmentUserTableRequest {
+  int32 department_id = 1;
+  Page page = 2;
+}
+
+message GetDepartmentUserTableReply {
+  repeated UserInfo list = 1;
+}
+
+// 分页模型
+message Page {
+  int32 current = 1;  // 当前页号
+  int32 size = 2;     // 每页大小
+}
