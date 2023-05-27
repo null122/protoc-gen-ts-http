@@ -80,7 +80,7 @@ func GenerateFile(request *pluginpb.CodeGeneratorRequest) (*pluginpb.CodeGenerat
 		)
 
 		res.File = append(res.File, &pluginpb.CodeGeneratorResponse_File{
-			Name:    proto.String(fileName + ".ts"),
+			Name:    proto.String(fileName + "Api" + ".ts"),
 			Content: proto.String(ts),
 		})
 	}

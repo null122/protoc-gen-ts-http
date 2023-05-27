@@ -10,6 +10,12 @@ option java_outer_classname = "User";
 
 service UserService {
 
+  rpc GetUserInfoByVagueName(GetUserNameRequest) returns (GetUserNameReply) {
+    option(google.api.http) = {
+      get: "/web/v1/userName/{name}"
+    };
+  }
+
   // 获取用户简要信息
   rpc GetUserInfo(GetUserRequest) returns (UserInfo) {
     option(google.api.http) = {
@@ -47,21 +53,53 @@ service UserService {
       body: "*"
     };
   }
+
+  // 登录
+  rpc Login(LoginRequest) returns (UserInfo) {
+    option(google.api.http) = {
+      post: "/web/v1/account/login"
+      body: "*"
+    };
+  }
+
+  rpc GetNowUserInfo(google.protobuf.Empty) returns (UserInfo) {
+    option(google.api.http) = {
+      get: "/web/v1/user"
+    };
+  }
+}
+
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message GetUserNameRequest {
+  string vague_name = 1;
+}
+
+message GetUserNameReply {
+  repeated NameList list = 1;
+}
+
+message NameList {
+  int64 id = 1;
+  string name = 2;
 }
 
 // 用户状态
 enum UserStatus {
-  EMPLOYED = 0; // 在职
-  RESIGNED = 1; // 离职
+    EMPLOYED = 0; // 在职
+    RESIGNED = 1; // 离职
 }
 
 message UserInfo {
   int32 id = 1;           // user-id
   string name = 2;
-  string employee_no = 3; // 员工号
-  int32 department_id = 4;
-  string department_name = 5;
-  string job_title = 6;   // 职务
+  optional string employee_no = 3; // 员工号
+  optional int32 department_id = 4;
+  optional string department_name = 5;
+  optional string job_title = 6;   // 职务
   string status = 7;
 }
 
@@ -69,20 +107,20 @@ message UserDetailInfo {
   int32 id = 1;           // user-id
   string name = 2;
   string email = 3;
-  string phone = 4;
-  string employee_no = 5; // 员工号
-  int32 department_id = 6;
-  string department_name = 7;
-  string job_title = 8;   // 职务
+  optional string phone = 4;
+  optional string employee_no = 5; // 员工号
+  optional int32 department_id = 6;
+  optional string department_name = 7;
+  optional string job_title = 8;   // 职务
   string status = 9;
 }
 
 message CreateUserRequest {
   string name = 1;
   string email = 2;
-  string phone = 3;
-  string employee_no = 4; // 员工号
-  int32 department_id = 5;
+  optional string phone = 3;
+  optional string employee_no = 4; // 员工号
+  optional int32 department_id = 5;
   string status = 6;
   string password = 7;
 }
