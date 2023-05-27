@@ -80,7 +80,7 @@ func GenerateFile(request *pluginpb.CodeGeneratorRequest) (*pluginpb.CodeGenerat
 		)
 
 		res.File = append(res.File, &pluginpb.CodeGeneratorResponse_File{
-			Name:    proto.String(fileName + "Api" + ".ts"),
+			Name:    proto.String(strings.ReplaceAll(file.GetPackage(), ".", "/") + fileName + "Api" + ".ts"),
 			Content: proto.String(ts),
 		})
 	}
@@ -126,7 +126,7 @@ func generateMethod(file *descriptorpb.FileDescriptorProto) string {
 
 			parameter := generateUrlParameter(ruleInfo.Path)
 
-			methodList = append(methodList, fmt.Sprintf(ControllerMethod, m.GetName(), input, output, output, parameter, ruleInfo.Method, ruleInfo.Path, output))
+			methodList = append(methodList, fmt.Sprintf(ControllerMethod, lowercaseFirstLetter(m.GetName()), input, output, output, parameter, ruleInfo.Method, ruleInfo.Path, output))
 		}
 	}
 
@@ -206,4 +206,12 @@ func toLowerCamelCase(str string) string {
 	}
 
 	return strings.Join(words, "")
+}
+
+func lowercaseFirstLetter(str string) string {
+	if len(str) > 0 {
+		first := strings.ToLower(string(str[0]))
+		return first + str[1:]
+	}
+	return str
 }

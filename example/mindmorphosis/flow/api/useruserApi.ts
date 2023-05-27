@@ -19,7 +19,7 @@ export class UserApi {
     }
     
     
-    public async GetUserInfoByVagueName(data: GetUserNameRequest): Promise<GetUserNameReply> {
+    public async getUserInfoByVagueName(data: GetUserNameRequest): Promise<GetUserNameReply> {
         const request_data = this.fromRequest(data)
         return new Promise<GetUserNameReply>((resolve, reject) => {
             
@@ -37,7 +37,7 @@ export class UserApi {
     }
 
 
-    public async GetUserInfo(data: GetUserRequest): Promise<UserInfo> {
+    public async getUserInfo(data: GetUserRequest): Promise<UserInfo> {
         const request_data = this.fromRequest(data)
         return new Promise<UserInfo>((resolve, reject) => {
             
@@ -55,7 +55,7 @@ export class UserApi {
     }
 
 
-    public async GetUserDetailInfo(data: GetUserDetailInfoRequest): Promise<UserDetailInfo> {
+    public async getUserDetailInfo(data: GetUserDetailInfoRequest): Promise<UserDetailInfo> {
         const request_data = this.fromRequest(data)
         return new Promise<UserDetailInfo>((resolve, reject) => {
             
@@ -73,7 +73,7 @@ export class UserApi {
     }
 
 
-    public async GetDepartmentUserTable(data: GetDepartmentUserTableRequest): Promise<GetDepartmentUserTableReply> {
+    public async getDepartmentUserTable(data: GetDepartmentUserTableRequest): Promise<GetDepartmentUserTableReply> {
         const request_data = this.fromRequest(data)
         return new Promise<GetDepartmentUserTableReply>((resolve, reject) => {
             
@@ -91,7 +91,7 @@ export class UserApi {
     }
 
 
-    public async ChangePassword(data: ChangePasswordRequest): Promise<undefined> {
+    public async changePassword(data: ChangePasswordRequest): Promise<undefined> {
         const request_data = this.fromRequest(data)
         return new Promise<undefined>((resolve, reject) => {
             
@@ -108,7 +108,7 @@ export class UserApi {
     }
 
 
-    public async CreateUser(data: CreateUserRequest): Promise<undefined> {
+    public async createUser(data: CreateUserRequest): Promise<undefined> {
         const request_data = this.fromRequest(data)
         return new Promise<undefined>((resolve, reject) => {
             
@@ -125,7 +125,7 @@ export class UserApi {
     }
 
 
-    public async Login(data: LoginRequest): Promise<UserInfo> {
+    public async login(data: LoginRequest): Promise<UserInfo> {
         const request_data = this.fromRequest(data)
         return new Promise<UserInfo>((resolve, reject) => {
             
@@ -142,7 +142,7 @@ export class UserApi {
     }
 
 
-    public async GetNowUserInfo(data: undefined): Promise<UserInfo> {
+    public async getNowUserInfo(data: undefined): Promise<UserInfo> {
         const request_data = this.fromRequest(data)
         return new Promise<UserInfo>((resolve, reject) => {
             
