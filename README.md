@@ -30,7 +30,7 @@ message UserInfo {
 }
 ```
 
-codegen to `.ts` file
+codegen to `userApi.ts` file
 
 ```typescript
 export class UserApi {
@@ -66,10 +66,10 @@ export class UserApi {
 }
 ```
 
-## How to use `.ts` file
+## How to use `userApi.ts` file
 
 ```typescript
-import {UserApi} from "./useruserApi";
+import {UserApi} from "./userApi";
 
 // Constructing the send function
 const customSend = async <T, R>({ method, url, data }: { method: string, url: string, data: T }): Promise<R> => {
