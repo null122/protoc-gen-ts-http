@@ -1,8 +1,11 @@
-# protoc-gen-ts-http
+# protoc-gen-ts-http [![npm](https://img.shields.io/npm/v/@protobuf-ts/plugin?x)](https://www.npmjs.com/package/protoc-gen-ts-httpapi)
 
-## How to use
+## Quickstart
 
-`protoc --plugin=protoc-gen-ts-http=path/to/plugin --ts-http_out=path/to/out --proto_path=path/to/proto yourProto.proto`
+- `npm i protoc-gen-ts-httpapi`
+> installs the plugin and the compiler "protoc"
+- `npm ts-httpapi_out=path/to/out proto_path=path/to/proto yourproto.proto`
+> generates yourproto.ts
 
 ## Codegen demo
 
