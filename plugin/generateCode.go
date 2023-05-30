@@ -72,6 +72,10 @@ func GenerateFile(request *pluginpb.CodeGeneratorRequest) (*pluginpb.CodeGenerat
 	var res pluginpb.CodeGeneratorResponse
 
 	for _, file := range request.ProtoFile {
+		if strings.Contains(file.GetPackage(), "google") {
+			continue
+		}
+
 		fileName := strings.Replace(file.GetName(), ".proto", "", 1)
 
 		ts := fmt.Sprintf(ProtoGenContent, file.GetName(),
