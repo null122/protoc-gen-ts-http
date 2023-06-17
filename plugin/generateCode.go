@@ -80,11 +80,11 @@ func GenerateFile(request *pluginpb.CodeGeneratorRequest) (*pluginpb.CodeGenerat
 
 		ts := fmt.Sprintf(ProtoGenContent, file.GetName(),
 			generateImport(file, fileName),
-			generateClass(file, fileName),
+			generateClass(file),
 		)
 
 		res.File = append(res.File, &pluginpb.CodeGeneratorResponse_File{
-			Name:    proto.String(strings.ReplaceAll(file.GetPackage(), ".", "/") + fileName + "Api" + ".ts"),
+			Name:    proto.String(fileName + "Api" + ".ts"),
 			Content: proto.String(ts),
 		})
 	}
@@ -105,33 +105,34 @@ func generateImport(file *descriptorpb.FileDescriptorProto, fileName string) str
 }
 
 // 生成类
-func generateClass(file *descriptorpb.FileDescriptorProto, fileName string) string {
-	return fmt.Sprintf(ControllerClass, strings.ToUpper(fileName[:1])+fileName[1:]+"Api", generateMethod(file))
+func generateClass(file *descriptorpb.FileDescriptorProto) string {
+	var classList []string
+	for _, service := range file.GetService() {
+		classList = append(classList, fmt.Sprintf(ControllerClass, service.GetName()+"Api", generateMethod(service)))
+	}
+	return strings.Join(classList, "\n")
 }
 
-func generateMethod(file *descriptorpb.FileDescriptorProto) string {
+func generateMethod(service *descriptorpb.ServiceDescriptorProto) string {
 	var methodList []string
-	service := file.GetService()
-	for _, s := range service {
-		mList := s.GetMethod()
-		for _, m := range mList {
-			input := getTypeName(m.GetInputType())
-			output := getTypeName(m.GetOutputType())
+	mList := service.GetMethod()
+	for _, m := range mList {
+		input := getTypeName(m.GetInputType())
+		output := getTypeName(m.GetOutputType())
 
-			if input == "Empty" {
-				input = "undefined"
-			}
-			if output == "Empty" {
-				output = "undefined"
-			}
-
-			rule, _ := proto.GetExtension(m.GetOptions(), annotations.E_Http).(*annotations.HttpRule)
-			ruleInfo := getHttpRuleInfo(rule)
-
-			parameter := generateUrlParameter(ruleInfo.Path)
-
-			methodList = append(methodList, fmt.Sprintf(ControllerMethod, lowercaseFirstLetter(m.GetName()), input, output, output, parameter, ruleInfo.Method, ruleInfo.Path, output))
+		if input == "Empty" {
+			input = "undefined"
 		}
+		if output == "Empty" {
+			output = "undefined"
+		}
+
+		rule, _ := proto.GetExtension(m.GetOptions(), annotations.E_Http).(*annotations.HttpRule)
+		ruleInfo := getHttpRuleInfo(rule)
+
+		parameter := generateUrlParameter(ruleInfo.Path)
+
+		methodList = append(methodList, fmt.Sprintf(ControllerMethod, lowercaseFirstLetter(m.GetName()), input, output, output, parameter, ruleInfo.Method, ruleInfo.Path, output))
 	}
 
 	return strings.Join(methodList, "\n")

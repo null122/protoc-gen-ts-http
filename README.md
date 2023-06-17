@@ -4,7 +4,7 @@
 
 - `npm i protoc-gen-ts-httpapi`
 > installs the plugin and the compiler "protoc"
-- `npm ts-httpapi_out=path/to/out proto_path=path/to/proto yourproto.proto`
+- `protoc --ts-httpapi_out=path/to/out proto_path=path/to/proto yourproto.proto`
 > generates yourproto.ts
 
 ## Codegen demo
