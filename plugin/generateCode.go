@@ -79,7 +79,7 @@ func GenerateFile(request *pluginpb.CodeGeneratorRequest) (*pluginpb.CodeGenerat
 		fileName := strings.Replace(file.GetName(), ".proto", "", 1)
 
 		ts := fmt.Sprintf(ProtoGenContent, file.GetName(),
-			generateImport(file, fileName),
+			generateImport(file, getTypeName(fileName)),
 			generateClass(file),
 		)
 
