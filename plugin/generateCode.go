@@ -42,13 +42,12 @@ export class %s {
 }`
 	ControllerMethod = `
     public async %s(data: %s): Promise<%s> {
-        const request_data = this.fromRequest(data)
         return new Promise<%s>((resolve, reject) => {
             %s
             this.send({
                 method: "%s",
                 url: ` + "`" + `%s` + "`" + `,
-                data: request_data,
+                data: %s,
             }).then((data) => {
                 resolve(this.fromResponse(data) as %s)
             }).catch((error) => {
@@ -58,7 +57,7 @@ export class %s {
     }
 `
 	GetUrlParameter = `
-            const %s = request_data.%s`
+            const %s = data.%s`
 )
 
 type httpRule struct {
@@ -98,7 +97,9 @@ func generateImport(file *descriptorpb.FileDescriptorProto, fileName string) str
 	var messageNames []string
 	messageList := file.GetMessageType()
 	for _, descriptorProto := range messageList {
-		messageNames = append(messageNames, descriptorProto.GetName())
+		if messageIsUse(file, descriptorProto.GetName()) {
+			messageNames = append(messageNames, descriptorProto.GetName())
+		}
 	}
 
 	return fmt.Sprintf(IMPORT, strings.Join(messageNames, ","), fileName)
@@ -132,7 +133,11 @@ func generateMethod(service *descriptorpb.ServiceDescriptorProto) string {
 
 		parameter := generateUrlParameter(ruleInfo.Path)
 
-		methodList = append(methodList, fmt.Sprintf(ControllerMethod, lowercaseFirstLetter(m.GetName()), input, output, output, parameter, ruleInfo.Method, ruleInfo.Path, output))
+		data := "this.fromRequest(data.toObject())"
+		if ruleInfo.Method == "GET" || ruleInfo.Method == "DELETE" {
+			data = "data"
+		}
+		methodList = append(methodList, fmt.Sprintf(ControllerMethod, lowercaseFirstLetter(m.GetName()), input, output, output, parameter, ruleInfo.Method, ruleInfo.Path, data, output))
 	}
 
 	return strings.Join(methodList, "\n")
@@ -191,6 +196,20 @@ func getHttpRuleInfo(rule *annotations.HttpRule) httpRule {
 		Path:   url,
 		Body:   body,
 	}
+}
+
+func messageIsUse(file *descriptorpb.FileDescriptorProto, typeName string) bool {
+	services := file.GetService()
+	for _, service := range services {
+		methodList := service.Method
+		for _, method := range methodList {
+			if getTypeName(method.GetInputType()) == typeName || getTypeName(method.GetOutputType()) == typeName {
+				return true
+			}
+		}
+	}
+
+	return false
 }
 
 func getTypeName(typePath string) string {
